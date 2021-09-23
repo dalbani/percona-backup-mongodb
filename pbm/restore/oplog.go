@@ -12,6 +12,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"reflect"
 	"strings"
 
@@ -377,10 +378,13 @@ func (o *Oplog) handleNonTxnOp(op db.Oplog) error {
 	}
 
 	err = o.applyOps([]interface{}{op})
+	opb, errm := json.Marshal(op)
+
 	if err != nil {
-		opb, errm := json.Marshal(op)
 		return errors.Wrapf(err, "op: %s | merr %v", opb, errm)
 	}
+
+	log.Printf("op: %s", opb)
 
 	return nil
 }
